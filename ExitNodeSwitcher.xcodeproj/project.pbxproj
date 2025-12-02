@@ -14,14 +14,14 @@
 		0B81578B2EDE9708008ECF29 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0B8157822EDE9708008ECF29 /* Assets.xcassets */; };
 		0B81578C2EDE9708008ECF29 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B8157872EDE9708008ECF29 /* Item.swift */; };
 		0B81578D2EDE9708008ECF29 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B8157832EDE9708008ECF29 /* ContentView.swift */; };
-		0B81578E2EDE9708008ECF29 /* ExitNodeSwitcherApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B8157862EDE9708008ECF29 /* ExitNodeSwitcherApp.swift */; };
+		0B81578E2EDE9708008ECF29 /* ExitNoderApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B8157862EDE9708008ECF29 /* ExitNoderApp.swift */; };
 		0B81578F2EDE9708008ECF29 /* TailscaleService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B8157882EDE9708008ECF29 /* TailscaleService.swift */; };
 		0BDE6FA92EDEA2CF0038D622 /* TailscaleLocalAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BDE6FA82EDEA2CF0038D622 /* TailscaleLocalAPI.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		0B3025AC2EDEA62300C2F03A /* claude.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = claude.md; sourceTree = "<group>"; };
-		0B4167792EDE931E00A5958C /* ExitNodeSwitcher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ExitNodeSwitcher.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0B4167792EDE931E00A5958C /* ExitNoder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ExitNoder.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0B5E07F42EDEB5D9004108B6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0B5E07F62EDEB83A004108B6 /* LOCATION_FEATURES.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = LOCATION_FEATURES.md; sourceTree = "<group>"; };
 		0B5E07F82EDEBA72004108B6 /* ManageFavoritesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageFavoritesView.swift; sourceTree = "<group>"; };
@@ -29,7 +29,7 @@
 		0B8157832EDE9708008ECF29 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		0B8157842EDE9708008ECF29 /* ExitNodeSwitcher.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ExitNodeSwitcher.entitlements; sourceTree = "<group>"; };
 		0B8157852EDE9708008ECF29 /* ExitNodeSwitcher.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ExitNodeSwitcher.xcodeproj; sourceTree = "<group>"; };
-		0B8157862EDE9708008ECF29 /* ExitNodeSwitcherApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExitNodeSwitcherApp.swift; sourceTree = "<group>"; };
+		0B8157862EDE9708008ECF29 /* ExitNoderApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExitNoderApp.swift; sourceTree = "<group>"; };
 		0B8157872EDE9708008ECF29 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		0B8157882EDE9708008ECF29 /* TailscaleService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TailscaleService.swift; sourceTree = "<group>"; };
 		0BDE6FA82EDEA2CF0038D622 /* TailscaleLocalAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TailscaleLocalAPI.swift; sourceTree = "<group>"; };
@@ -53,7 +53,7 @@
 				0B8157832EDE9708008ECF29 /* ContentView.swift */,
 				0B8157842EDE9708008ECF29 /* ExitNodeSwitcher.entitlements */,
 				0B8157852EDE9708008ECF29 /* ExitNodeSwitcher.xcodeproj */,
-				0B8157862EDE9708008ECF29 /* ExitNodeSwitcherApp.swift */,
+				0B8157862EDE9708008ECF29 /* ExitNoderApp.swift */,
 				0B8157872EDE9708008ECF29 /* Item.swift */,
 				0B8157882EDE9708008ECF29 /* TailscaleService.swift */,
 				0B41677A2EDE931E00A5958C /* Products */,
@@ -68,7 +68,7 @@
 		0B41677A2EDE931E00A5958C /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				0B4167792EDE931E00A5958C /* ExitNodeSwitcher.app */,
+				0B4167792EDE931E00A5958C /* ExitNoder.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -81,9 +81,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		0B4167782EDE931E00A5958C /* ExitNodeSwitcher */ = {
+		0B4167782EDE931E00A5958C /* ExitNoder */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 0B4167862EDE931F00A5958C /* Build configuration list for PBXNativeTarget "ExitNodeSwitcher" */;
+			buildConfigurationList = 0B4167862EDE931F00A5958C /* Build configuration list for PBXNativeTarget "ExitNoder" */;
 			buildPhases = (
 				0B4167752EDE931E00A5958C /* Sources */,
 				0B4167762EDE931E00A5958C /* Frameworks */,
@@ -93,11 +93,11 @@
 			);
 			dependencies = (
 			);
-			name = ExitNodeSwitcher;
+			name = ExitNoder;
 			packageProductDependencies = (
 			);
 			productName = ExitNodeSwitcher;
-			productReference = 0B4167792EDE931E00A5958C /* ExitNodeSwitcher.app */;
+			productReference = 0B4167792EDE931E00A5958C /* ExitNoder.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -136,7 +136,7 @@
 			);
 			projectRoot = "";
 			targets = (
-				0B4167782EDE931E00A5958C /* ExitNodeSwitcher */,
+				0B4167782EDE931E00A5958C /* ExitNoder */,
 			);
 		};
 /* End PBXProject section */
@@ -164,7 +164,7 @@
 				0B5E07F92EDEBA72004108B6 /* ManageFavoritesView.swift in Sources */,
 				0B81578C2EDE9708008ECF29 /* Item.swift in Sources */,
 				0B81578D2EDE9708008ECF29 /* ContentView.swift in Sources */,
-				0B81578E2EDE9708008ECF29 /* ExitNodeSwitcherApp.swift in Sources */,
+				0B81578E2EDE9708008ECF29 /* ExitNoderApp.swift in Sources */,
 				0B81578F2EDE9708008ECF29 /* TailscaleService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -320,6 +320,7 @@
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ExitNoder;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -367,6 +368,7 @@
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ExitNoder;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -397,7 +399,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		0B4167862EDE931F00A5958C /* Build configuration list for PBXNativeTarget "ExitNodeSwitcher" */ = {
+		0B4167862EDE931F00A5958C /* Build configuration list for PBXNativeTarget "ExitNoder" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				0B4167872EDE931F00A5958C /* Debug */,

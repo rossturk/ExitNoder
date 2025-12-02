@@ -1,6 +1,6 @@
 //
 //  ManageFavoritesView.swift
-//  ExitNodeSwitcher
+//  ExitNoder
 //
 //  Created by Ross Turk on 12/2/25.
 //
@@ -13,8 +13,6 @@ struct ManageFavoritesView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(TailscaleService.self) private var tailscaleService
     @Query(sort: \FavoriteExitNode.order) private var favorites: [FavoriteExitNode]
-    
-    @State private var showMap = false
     
     // Group exit nodes by location
     private var groupedNodes: [LocationGroup] {
@@ -44,32 +42,13 @@ struct ManageFavoritesView: View {
     
     var body: some View {
         NavigationStack {
-            VStack(spacing: 0) {
-                // Toggle between list and map view
-                Picker("View Mode", selection: $showMap) {
-                    Label("List", systemImage: "list.bullet").tag(false)
-                    Label("Map", systemImage: "map").tag(true)
-                }
-                .pickerStyle(.segmented)
-                .padding()
-                
-                if showMap {
-                    FavoritesMapView(
-                        favorites: favorites,
-                        groupedNodes: groupedNodes,
-                        onAddFavoriteGroup: addFavoriteGroup
-                    )
-                } else {
-                    FavoritesListView(
-                        favorites: favorites,
-                        groupedNodes: groupedNodes,
-                        isLoading: tailscaleService.isLoading,
-                        onAddFavoriteGroup: addFavoriteGroup,
-                        onDeleteFavorite: deleteFavorite
-                    )
-                }
-            }
-            .navigationTitle("Manage Favorites")
+            FavoritesMapView(
+                favorites: favorites,
+                groupedNodes: groupedNodes,
+                onAddFavoriteGroup: addFavoriteGroup,
+                onDeleteFavorite: deleteFavorite
+            )
+            .navigationTitle("ExitNoder Locations")
             .frame(minWidth: 500, minHeight: 600)
         }
         .task {
@@ -78,7 +57,7 @@ struct ManageFavoritesView: View {
     }
     
     private func addFavoriteGroup(_ group: LocationGroup) {
-        guard favorites.count < 3 else { return }
+        guard favorites.count < 15 else { return }
         
         let newFavorite = FavoriteExitNode(
             name: group.displayName,
@@ -131,81 +110,13 @@ struct LocationGroup: Identifiable, Hashable {
     }
 }
 
-// MARK: - List View
-
-struct FavoritesListView: View {
-    let favorites: [FavoriteExitNode]
-    let groupedNodes: [LocationGroup]
-    let isLoading: Bool
-    let onAddFavoriteGroup: (LocationGroup) -> Void
-    let onDeleteFavorite: (FavoriteExitNode) -> Void
-    
-    var body: some View {
-        List {
-            Section {
-                if favorites.isEmpty {
-                    Text("No favorites yet. Add up to 3 locations as favorites.")
-                        .foregroundStyle(.secondary)
-                } else {
-                    ForEach(favorites) { favorite in
-                        HStack {
-                            Image(systemName: favorite.isLocationGroup ? "building.2.fill" : "star.fill")
-                                .foregroundStyle(.yellow)
-                            
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(favorite.name)
-                                
-                                if favorite.isLocationGroup {
-                                    Text("\(favorite.nodeIDs.count) servers • Round-robin")
-                                        .font(.caption2)
-                                        .foregroundStyle(.secondary)
-                                }
-                            }
-                            
-                            Spacer()
-                            Button(action: {
-                                onDeleteFavorite(favorite)
-                            }) {
-                                Image(systemName: "trash")
-                                    .foregroundStyle(.red)
-                            }
-                            .buttonStyle(.plain)
-                        }
-                    }
-                }
-            } header: {
-                Text("Current Favorites (\(favorites.count)/3)")
-            }
-            
-            if favorites.count < 3 {
-                Section("Available Locations") {
-                    if isLoading {
-                        HStack {
-                            ProgressView()
-                            Text("Loading exit nodes...")
-                        }
-                    } else {
-                        // Show all locations (grouped)
-                        ForEach(groupedNodes) { group in
-                            LocationGroupRow(
-                                group: group,
-                                isFavorited: favorites.contains(where: { $0.locationKey == group.locationKey }),
-                                onAddGroup: onAddFavoriteGroup
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
 // MARK: - Map View
 
 struct FavoritesMapView: View {
     let favorites: [FavoriteExitNode]
     let groupedNodes: [LocationGroup]
     let onAddFavoriteGroup: (LocationGroup) -> Void
+    let onDeleteFavorite: ((FavoriteExitNode) -> Void)?
     
     @State private var position: MapCameraPosition = .automatic
     @State private var selectedGroup: LocationGroup?
@@ -213,6 +124,11 @@ struct FavoritesMapView: View {
     // Check if a location is already favorited
     private func isLocationFavorited(_ group: LocationGroup) -> Bool {
         favorites.contains(where: { $0.locationKey == group.locationKey })
+    }
+    
+    // Get the favorite for a location group
+    private func getFavorite(for group: LocationGroup) -> FavoriteExitNode? {
+        favorites.first(where: { $0.locationKey == group.locationKey })
     }
     
     // Get the favorite count (for display)
@@ -292,12 +208,29 @@ struct FavoritesMapView: View {
                         HStack {
                             Image(systemName: "star.fill")
                                 .foregroundStyle(.yellow)
-                            Text("Already in favorites")
+                            Text("In favorites")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
+                            
+                            Spacer()
                         }
-                    } else if favoriteCount >= 3 {
-                        Text("Maximum 3 favorites reached")
+                        
+                        Button(action: {
+                            if let favorite = getFavorite(for: group) {
+                                onDeleteFavorite?(favorite)
+                                selectedGroup = nil
+                            }
+                        }) {
+                            Label("Remove from Favorites", systemImage: "trash")
+                                .font(.subheadline)
+                                .foregroundStyle(.white)
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 6)
+                                .background(Color.red, in: RoundedRectangle(cornerRadius: 8))
+                        }
+                        .buttonStyle(.plain)
+                    } else if favoriteCount >= 15 {
+                        Text("Maximum 15 favorites reached")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     } else {
@@ -330,94 +263,3 @@ struct FavoritesMapView: View {
     }
 }
 
-// MARK: - Location Group Row
-
-struct LocationGroupRow: View {
-    let group: LocationGroup
-    let isFavorited: Bool
-    let onAddGroup: (LocationGroup) -> Void
-    
-    @State private var isExpanded = false
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    HStack(spacing: 6) {
-                        Text(group.displayName)
-                            .font(.headline)
-                        
-                        if isFavorited {
-                            Image(systemName: "star.fill")
-                                .font(.caption)
-                                .foregroundStyle(.yellow)
-                        }
-                    }
-                    
-                    Text("\(group.nodes.count) server\(group.nodes.count == 1 ? "" : "s")\(group.hasMultipleNodes ? " • Round-robin" : "")")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-                
-                Spacer()
-                
-                // Expand/collapse button
-                Button(action: {
-                    isExpanded.toggle()
-                }) {
-                    Image(systemName: isExpanded ? "chevron.down" : "chevron.right")
-                        .foregroundStyle(.secondary)
-                }
-                .buttonStyle(.plain)
-                
-                // Add button (disabled if already favorited)
-                Button(action: {
-                    onAddGroup(group)
-                }) {
-                    HStack(spacing: 4) {
-                        if group.hasMultipleNodes {
-                            Image(systemName: "building.2")
-                        }
-                        Image(systemName: "plus.circle.fill")
-                    }
-                    .foregroundStyle(isFavorited ? .gray : .blue)
-                }
-                .buttonStyle(.plain)
-                .disabled(isFavorited)
-                .help(isFavorited ? "Already in favorites" : (group.hasMultipleNodes ? "Add location with round-robin" : "Add single server"))
-            }
-            
-            // Show individual nodes when expanded
-            if isExpanded {
-                VStack(alignment: .leading, spacing: 6) {
-                    ForEach(group.nodes) { node in
-                        HStack(spacing: 8) {
-                            Image(systemName: "circle.fill")
-                                .font(.system(size: 6))
-                                .foregroundStyle(.secondary)
-                            
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(node.name)
-                                    .font(.subheadline)
-                                
-                                if let location = node.location {
-                                    if let city = location.city, let country = location.country {
-                                        Text("\(city), \(country)")
-                                            .font(.caption2)
-                                            .foregroundStyle(.secondary)
-                                    }
-                                }
-                            }
-                            
-                            Spacer()
-                        }
-                        .padding(.leading, 20)
-                        .padding(.vertical, 2)
-                    }
-                }
-                .padding(.top, 4)
-            }
-        }
-        .padding(.vertical, 4)
-    }
-}

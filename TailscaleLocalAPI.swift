@@ -1,6 +1,6 @@
 //
 //  TailscaleLocalAPI.swift
-//  ExitNodeSwitcher
+//  ExitNoder
 //
 //  Communicates with Tailscale via the Local API or CLI
 //

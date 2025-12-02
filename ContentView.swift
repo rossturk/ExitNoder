@@ -1,6 +1,6 @@
 //
 //  ContentView.swift
-//  ExitNodeSwitcher
+//  ExitNoder
 //
 //  Created by Ross Turk on 12/1/25.
 //
@@ -41,7 +41,7 @@ struct ContentView: View {
                 }
             } label: {
                 HStack {
-                    Label("Turn Off Exit Node", systemImage: "xmark.circle")
+                    Label("Disable Exit Nodes", systemImage: "xmark.circle")
                     Spacer()
                 }
                 .contentShape(Rectangle())
@@ -69,7 +69,7 @@ struct ContentView: View {
                 openWindow(id: "manage-favorites")
             } label: {
                 HStack {
-                    Label("Manage Favorites…", systemImage: "star")
+                    Label("Manage Locations…", systemImage: "star")
                     Spacer()
                 }
                 .contentShape(Rectangle())

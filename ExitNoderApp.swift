@@ -1,6 +1,6 @@
 //
-//  ExitNodeSwitcherApp.swift
-//  ExitNodeSwitcher
+//  ExitNoderApp.swift
+//  ExitNoder
 //
 //  Created by Ross Turk on 12/1/25.
 //
@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftData
 
 @main
-struct ExitNodeSwitcherApp: App {
+struct ExitNoderApp: App {
     @State private var tailscaleService = TailscaleService()
     @State private var hasUpdatedHostnames = false
     
@@ -59,13 +59,13 @@ struct ExitNodeSwitcherApp: App {
         }
         .modelContainer(sharedModelContainer)
                 
-        Window("Manage Favorites", id: "manage-favorites") {
+        Window("ExitNoder Locations", id: "manage-favorites") {
             ManageFavoritesView()
                 .environment(tailscaleService)
                 .modelContainer(sharedModelContainer)
                 .onAppear {
                     // Make window float on top
-                    if let window = NSApplication.shared.windows.first(where: { $0.title == "Manage Favorites" }) {
+                    if let window = NSApplication.shared.windows.first(where: { $0.title == "ExitNoder Locations" }) {
                         window.level = .floating
                     }
                 }
