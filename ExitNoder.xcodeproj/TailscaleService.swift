@@ -1,6 +1,6 @@
 //
 //  TailscaleService.swift
-//  ExitNodeSwitcher
+//  ExitNoder
 //
 //  Created by Ross Turk on 12/1/25.
 //
