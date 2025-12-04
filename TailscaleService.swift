@@ -55,13 +55,9 @@ class TailscaleService {
             // Get current exit node
             currentExitNode = status.exitNodeID
         } catch let error as TailscaleAPIError {
-            // Only log significant errors, suppress connection refused
             errorMessage = error.localizedDescription
-        } catch let urlError as URLError where urlError.code == .cannotConnectToHost {
-            // Silently handle Tailscale not running - don't spam console
-            errorMessage = "Tailscale is not running. Please start Tailscale to manage exit nodes."
         } catch {
-            errorMessage = "Mac App Store installations of Tailscale aren't supported."
+            errorMessage = "Failed to connect to Tailscale. Please ensure the standalone version is installed and running."
         }
         
         isLoading = false
@@ -79,10 +75,8 @@ class TailscaleService {
             currentExitNode = status.exitNodeID
         } catch let error as TailscaleAPIError {
             errorMessage = error.localizedDescription
-        } catch let urlError as URLError where urlError.code == .cannotConnectToHost {
-            errorMessage = "Tailscale is not running. Please start Tailscale to manage exit nodes."
         } catch {
-            errorMessage = "Failed to set exit node. Please ensure Tailscale is running."
+            errorMessage = "Failed to set exit node. Please ensure the standalone version of Tailscale is installed and running."
         }
         
         isLoading = false
