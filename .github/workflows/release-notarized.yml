@@ -64,8 +64,11 @@ jobs:
           -scheme "${{ env.SCHEME }}" \
           -archivePath "${{ env.APP_NAME }}.xcarchive" \
           -configuration Release \
+          CODE_SIGN_STYLE=Manual \
           DEVELOPMENT_TEAM="${{ secrets.APPLE_TEAM_ID }}" \
-          CODE_SIGN_IDENTITY="Developer ID Application"
+          CODE_SIGN_IDENTITY="Developer ID Application" \
+          CODE_SIGNING_REQUIRED=YES \
+          CODE_SIGNING_ALLOWED=YES
     
     - name: Export app
       run: |
