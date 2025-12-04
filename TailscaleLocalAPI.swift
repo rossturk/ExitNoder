@@ -31,13 +31,15 @@ class TailscaleLocalAPI {
     ///   - nodeID: The node ID to set as exit node, or nil to disable
     ///   - nodeName: Unused, kept for API compatibility
     func setExitNode(nodeID: String?, nodeName: String? = nil) async throws {
-        var body: [String: Any] = [:]
-        if let nodeID = nodeID {
-            body["id"] = nodeID
-        }
+        // Use MaskedPrefs format: include the field AND a <FieldName>Set: true flag
+        var body: [String: Any] = [
+            "ExitNodeIDSet": true,
+            "ExitNodeID": nodeID ?? ""
+        ]
 
         let bodyData = try JSONSerialization.data(withJSONObject: body)
-        _ = try await sendRequest(method: "POST", path: "/localapi/v0/exit-node", body: bodyData)
+        logger.info("Setting exit node with body: \(String(data: bodyData, encoding: .utf8) ?? "nil")")
+        _ = try await sendRequest(method: "PATCH", path: "/localapi/v0/prefs", body: bodyData)
     }
 
     // MARK: - Local API Communication
@@ -116,7 +118,8 @@ class TailscaleLocalAPI {
             }
 
             guard (200...299).contains(httpResponse.statusCode) else {
-                logger.error("HTTP error: \(httpResponse.statusCode)")
+                let bodyString = String(data: data, encoding: .utf8) ?? "<no body>"
+                logger.error("HTTP error \(httpResponse.statusCode) for \(method) \(path): \(bodyString)")
                 throw TailscaleAPIError.connectionFailed
             }
 
