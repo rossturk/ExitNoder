@@ -46,9 +46,10 @@ struct ExitNoderApp: App {
     }
 
     var body: some Scene {
-        MenuBarExtra("Tailscale Exit Node", systemImage: "arrow.triangle.swap") {
+        MenuBarExtra("Tailscale Exit Node", image: "MenubarIconTemplate") {
             ContentView()
                 .environment(tailscaleService)
+                .modelContainer(sharedModelContainer)
                 .task {
                     // One-time hostname update on first menu open
                     if !hasUpdatedHostnames {
@@ -57,16 +58,18 @@ struct ExitNoderApp: App {
                     }
                 }
         }
-        .modelContainer(sharedModelContainer)
                 
         Window("ExitNoder Locations", id: "manage-favorites") {
             ManageFavoritesView()
                 .environment(tailscaleService)
                 .modelContainer(sharedModelContainer)
                 .onAppear {
-                    // Make window float on top
-                    if let window = NSApplication.shared.windows.first(where: { $0.title == "ExitNoder Locations" }) {
-                        window.level = .floating
+                    // Make window float on top of fullscreen apps
+                    DispatchQueue.main.async {
+                        if let window = NSApplication.shared.windows.first(where: { $0.identifier?.rawValue == "manage-favorites" }) {
+                            window.level = .popUpMenu  // Same level as menu bar extras
+                            window.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
+                        }
                     }
                 }
         }

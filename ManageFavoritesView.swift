@@ -158,11 +158,14 @@ struct LocationGroup: Identifiable, Hashable {
 struct CountryGroup: Identifiable {
     let id: String
     let country: String
+    let countryName: String
     let locations: [LocationGroup]
     
     init(country: String, locations: [LocationGroup]) {
         self.id = country
         self.country = country
+        // Get the country name from the first location
+        self.countryName = locations.first?.location.country ?? country
         self.locations = locations
     }
 }
@@ -263,7 +266,8 @@ struct FavoritesListView: View {
                                         if let favorite = getFavorite(for: location) {
                                             onDeleteFavorite?(favorite)
                                         }
-                                    }
+                                    },
+                                    isSingleLocationInCountry: true
                                 )
                             }
                         } else {
@@ -292,19 +296,35 @@ struct FavoritesListView: View {
                                             if let favorite = getFavorite(for: location) {
                                                 onDeleteFavorite?(favorite)
                                             }
-                                        }
+                                        },
+                                        isSingleLocationInCountry: false
                                     )
                                 }
                             } label: {
-                                HStack {
+                                HStack(spacing: 12) {
+                                    // Flag takes full height
                                     Text(countryFlag(for: countryGroup.country))
-                                    Text(countryGroup.country)
-                                        .font(.headline)
+                                        .font(.system(size: 40))
+                                        .frame(width: 50)
+                                    
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text(countryGroup.countryName)
+                                            .font(.body)
+                                        
+                                        HStack(spacing: 4) {
+                                            Image(systemName: "server.rack")
+                                                .font(.caption2)
+                                                .foregroundStyle(.secondary)
+                                            
+                                            Text("\(countryGroup.locations.count) \(countryGroup.locations.count == 1 ? "city" : "cities")")
+                                                .font(.caption)
+                                                .foregroundStyle(.secondary)
+                                        }
+                                    }
+                                    
                                     Spacer()
-                                    Text("\(countryGroup.locations.count) \(countryGroup.locations.count == 1 ? "city" : "cities")")
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
                                 }
+                                .padding(.vertical, 4)
                             }
                         }
                     }
@@ -328,6 +348,7 @@ struct LocationRow: View {
     let favoriteCount: Int
     let onAdd: () -> Void
     let onRemove: () -> Void
+    let isSingleLocationInCountry: Bool
     
     // Convert country code to flag emoji
     private var countryFlag: String {
@@ -357,15 +378,32 @@ struct LocationRow: View {
         return location.displayName
     }
     
+    // Format location name for single-location countries (show country name)
+    private var singleLocationName: String {
+        // For single locations, show the country name
+        if let country = location.location.country {
+            return country
+        }
+        
+        // Fallback to city name
+        return formattedLocationName
+    }
+    
+    // Choose the appropriate display name
+    private var displayName: String {
+        isSingleLocationInCountry ? singleLocationName : formattedLocationName
+    }
+    
     var body: some View {
-        HStack {
+        HStack(spacing: 12) {
+            // Flag takes full height
+            Text(countryFlag)
+                .font(.system(size: 40))
+                .frame(width: 50)
+            
             VStack(alignment: .leading, spacing: 4) {
-                HStack(spacing: 6) {
-                    Text(countryFlag)
-                        .font(.body)
-                    Text(formattedLocationName)
-                        .font(.body)
-                }
+                Text(displayName)
+                    .font(.body)
                 
                 HStack(spacing: 4) {
                     Image(systemName: location.hasMultipleNodes ? "server.rack" : "server.rack")
@@ -384,17 +422,21 @@ struct LocationRow: View {
                 Button(action: onRemove) {
                     Image(systemName: "star.fill")
                         .foregroundStyle(.yellow)
+                        .frame(width: 24, height: 24)
                 }
                 .buttonStyle(.plain)
                 .help("Remove from favorites")
+                .contentShape(Rectangle())
             } else {
                 Button(action: onAdd) {
                     Image(systemName: "star")
                         .foregroundStyle(.secondary)
+                        .frame(width: 24, height: 24)
                 }
                 .buttonStyle(.plain)
                 .disabled(favoriteCount >= 15)
                 .help(favoriteCount >= 15 ? "Maximum 15 favorites reached" : "Add to favorites")
+                .contentShape(Rectangle())
             }
         }
         .padding(.vertical, 4)

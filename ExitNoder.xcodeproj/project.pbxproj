@@ -7,9 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0B3025AD2EDEA62300C2F03A /* claude.md in Resources */ = {isa = PBXBuildFile; fileRef = 0B3025AC2EDEA62300C2F03A /* claude.md */; };
-		0B5E07F52EDEB5D9004108B6 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0B5E07F42EDEB5D9004108B6 /* Info.plist */; };
-		0B5E07F72EDEB83A004108B6 /* LOCATION_FEATURES.md in Resources */ = {isa = PBXBuildFile; fileRef = 0B5E07F62EDEB83A004108B6 /* LOCATION_FEATURES.md */; };
 		0B5E07F92EDEBA72004108B6 /* ManageFavoritesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B5E07F82EDEBA72004108B6 /* ManageFavoritesView.swift */; };
 		0B81578B2EDE9708008ECF29 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0B8157822EDE9708008ECF29 /* Assets.xcassets */; };
 		0B81578C2EDE9708008ECF29 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B8157872EDE9708008ECF29 /* Item.swift */; };
@@ -146,10 +143,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0B3025AD2EDEA62300C2F03A /* claude.md in Resources */,
 				0B81578B2EDE9708008ECF29 /* Assets.xcassets in Resources */,
-				0B5E07F72EDEB83A004108B6 /* LOCATION_FEATURES.md in Resources */,
-				0B5E07F52EDEB5D9004108B6 /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

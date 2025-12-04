@@ -54,7 +54,7 @@ struct ContentView: View {
                         
             // Favorites Section
             if !favorites.isEmpty {
-                ForEach(Array(favorites.prefix(3).enumerated()), id: \.element.id) { index, favorite in
+                ForEach(Array(favorites.enumerated()), id: \.element.id) { index, favorite in
                     favoriteButton(for: favorite, at: index)
                 }
                 
@@ -69,7 +69,7 @@ struct ContentView: View {
                 openWindow(id: "manage-favorites")
             } label: {
                 HStack {
-                    Label("Manage Locations…", systemImage: "star")
+                    Label("Favorites…", systemImage: "star")
                     Spacer()
                 }
                 .contentShape(Rectangle())
@@ -103,19 +103,30 @@ struct ContentView: View {
     private func favoriteButton(for favorite: FavoriteExitNode, at index: Int) -> some View {
         Button {
             Task { @MainActor in
-                if favorite.isLocationGroup {
-                    // Round-robin: get next node in the group
-                    let nextNodeID = favorite.getNextNodeID()
-                    
-                    // Find the corresponding node to get its hostname
-                    if let node = tailscaleService.availableExitNodes.first(where: { $0.id == nextNodeID }) {
-                        await tailscaleService.setExitNode(nextNodeID, nodeName: node.dnsName)
-                    } else {
-                        await tailscaleService.setExitNode(nextNodeID, nodeName: nil)
-                    }
+                // Check if this favorite is currently active
+                let isActive = favorite.isLocationGroup 
+                    ? favorite.nodeIDs.contains(tailscaleService.currentExitNode ?? "")
+                    : tailscaleService.currentExitNode == favorite.nodeID
+                
+                if isActive {
+                    // If already active, disable exit nodes
+                    await tailscaleService.setExitNode(nil)
                 } else {
-                    // Single node: use as before
-                    await tailscaleService.setExitNode(favorite.nodeID, nodeName: favorite.hostnameOrFallback)
+                    // If not active, activate it
+                    if favorite.isLocationGroup {
+                        // Round-robin: get next node in the group
+                        let nextNodeID = favorite.getNextNodeID()
+                        
+                        // Find the corresponding node to get its hostname
+                        if let node = tailscaleService.availableExitNodes.first(where: { $0.id == nextNodeID }) {
+                            await tailscaleService.setExitNode(nextNodeID, nodeName: node.dnsName)
+                        } else {
+                            await tailscaleService.setExitNode(nextNodeID, nodeName: nil)
+                        }
+                    } else {
+                        // Single node: use as before
+                        await tailscaleService.setExitNode(favorite.nodeID, nodeName: favorite.hostnameOrFallback)
+                    }
                 }
             }
         } label: {
