@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <img src="screenshot/screenshot.png" alt="ExitNoder Screenshot">
+  <img src="screenshots/screenshot.png" alt="ExitNoder Screenshot">
 </p>
 
 ---
