@@ -206,7 +206,12 @@ class TailscaleLocalAPI {
                 
                 let output = String(data: outputData as Data, encoding: .utf8) ?? ""
                 let errorOutput = String(data: errorData as Data, encoding: .utf8) ?? ""
-                                
+
+                // Debug logging
+                print("🔧 Process terminated - status: \(process.terminationStatus), reason: \(process.terminationReason.rawValue)")
+                print("🔧 stdout: \(output.prefix(200))")
+                print("🔧 stderr: \(errorOutput.prefix(200))")
+
                 if process.terminationStatus == 0 {
                     continuation.resume(returning: output)
                 } else {
