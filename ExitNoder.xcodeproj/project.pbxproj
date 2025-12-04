@@ -17,10 +17,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0B3025AC2EDEA62300C2F03A /* claude.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = claude.md; sourceTree = "<group>"; };
 		0B4167792EDE931E00A5958C /* ExitNoder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ExitNoder.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0B5E07F42EDEB5D9004108B6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		0B5E07F62EDEB83A004108B6 /* LOCATION_FEATURES.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = LOCATION_FEATURES.md; sourceTree = "<group>"; };
 		0B5E07F82EDEBA72004108B6 /* ManageFavoritesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageFavoritesView.swift; sourceTree = "<group>"; };
 		0B8157822EDE9708008ECF29 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0B8157832EDE9708008ECF29 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -55,9 +53,7 @@
 				0B8157882EDE9708008ECF29 /* TailscaleService.swift */,
 				0B41677A2EDE931E00A5958C /* Products */,
 				0BDE6FA82EDEA2CF0038D622 /* TailscaleLocalAPI.swift */,
-				0B3025AC2EDEA62300C2F03A /* claude.md */,
 				0B5E07F42EDEB5D9004108B6 /* Info.plist */,
-				0B5E07F62EDEB83A004108B6 /* LOCATION_FEATURES.md */,
 				0B5E07F82EDEBA72004108B6 /* ManageFavoritesView.swift */,
 			);
 			sourceTree = "<group>";
@@ -297,7 +293,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = JHC6Q2J4VQ;
+				DEVELOPMENT_TEAM = GMCNS5BCDX;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
@@ -347,7 +343,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = JHC6Q2J4VQ;
+				DEVELOPMENT_TEAM = GMCNS5BCDX;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
