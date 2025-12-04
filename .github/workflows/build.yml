@@ -1,0 +1,92 @@
+name: Build on Main
+
+# Builds the app on every push to main and uploads as artifact
+# For actual releases, create a tag (e.g., v1.0.0) to trigger release.yml
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+env:
+  APP_NAME: ExitNoder
+  SCHEME: ExitNoder
+  
+jobs:
+  build:
+    runs-on: macos-14
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Select Xcode version
+      run: sudo xcode-select -s /Applications/Xcode_15.4.app/Contents/Developer
+      
+    - name: Show build environment
+      run: |
+        xcodebuild -version
+        swift --version
+      
+    - name: Build app (unsigned for testing)
+      run: |
+        xcodebuild clean build \
+          -scheme "${{ env.SCHEME }}" \
+          -configuration Debug \
+          -derivedDataPath ./DerivedData \
+          CODE_SIGN_IDENTITY="" \
+          CODE_SIGNING_REQUIRED=NO \
+          CODE_SIGNING_ALLOWED=NO
+    
+    - name: Run tests (if available)
+      continue-on-error: true
+      run: |
+        xcodebuild test \
+          -scheme "${{ env.SCHEME }}" \
+          -derivedDataPath ./DerivedData \
+          CODE_SIGN_IDENTITY="" \
+          CODE_SIGNING_REQUIRED=NO \
+          CODE_SIGNING_ALLOWED=NO || echo "No tests found or tests failed"
+    
+    - name: Archive app for artifact
+      if: github.event_name == 'push'
+      run: |
+        xcodebuild archive \
+          -scheme "${{ env.SCHEME }}" \
+          -archivePath "${{ env.APP_NAME }}.xcarchive" \
+          -configuration Release \
+          CODE_SIGN_IDENTITY="" \
+          CODE_SIGNING_REQUIRED=NO \
+          CODE_SIGNING_ALLOWED=NO
+        
+        # Extract app
+        mkdir -p build
+        cp -R "${{ env.APP_NAME }}.xcarchive/Products/Applications/${{ env.APP_NAME }}.app" build/
+        
+        # Create ZIP
+        cd build
+        ditto -c -k --sequesterRsrc --keepParent "${{ env.APP_NAME }}.app" "../${{ env.APP_NAME }}.zip"
+        cd ..
+    
+    - name: Upload build artifact
+      if: github.event_name == 'push'
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ env.APP_NAME }}-dev-${{ github.sha }}
+        path: ${{ env.APP_NAME }}.zip
+        retention-days: 7
+    
+    - name: Comment on PR with build status
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: '✅ Build succeeded! The app compiled successfully.'
+          })

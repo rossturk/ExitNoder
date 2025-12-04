@@ -1,0 +1,104 @@
+name: Build and Release
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+env:
+  APP_NAME: ExitNoder
+  SCHEME: ExitNoder
+  
+jobs:
+  build:
+    runs-on: macos-14
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Select Xcode version
+      run: sudo xcode-select -s /Applications/Xcode_15.4.app/Contents/Developer
+      
+    - name: Show Xcode version
+      run: xcodebuild -version
+      
+    - name: Build app
+      run: |
+        xcodebuild clean archive \
+          -scheme "${{ env.SCHEME }}" \
+          -archivePath "${{ env.APP_NAME }}.xcarchive" \
+          -configuration Release \
+          CODE_SIGN_IDENTITY="" \
+          CODE_SIGNING_REQUIRED=NO \
+          CODE_SIGNING_ALLOWED=NO
+    
+    - name: Export app
+      run: |
+        # Create export directory
+        mkdir -p build
+        
+        # Copy app from archive
+        cp -R "${{ env.APP_NAME }}.xcarchive/Products/Applications/${{ env.APP_NAME }}.app" build/
+        
+    - name: Create DMG
+      run: |
+        # Install create-dmg if needed
+        brew install create-dmg
+        
+        # Create DMG
+        create-dmg \
+          --volname "${{ env.APP_NAME }}" \
+          --window-pos 200 120 \
+          --window-size 600 400 \
+          --icon-size 100 \
+          --icon "${{ env.APP_NAME }}.app" 175 120 \
+          --hide-extension "${{ env.APP_NAME }}.app" \
+          --app-drop-link 425 120 \
+          "${{ env.APP_NAME }}.dmg" \
+          "build/" || true
+        
+        # Fallback: create simple DMG if create-dmg fails
+        if [ ! -f "${{ env.APP_NAME }}.dmg" ]; then
+          hdiutil create -volname "${{ env.APP_NAME }}" -srcfolder build -ov -format UDZO "${{ env.APP_NAME }}.dmg"
+        fi
+    
+    - name: Create ZIP
+      run: |
+        cd build
+        ditto -c -k --sequesterRsrc --keepParent "${{ env.APP_NAME }}.app" "../${{ env.APP_NAME }}.zip"
+        cd ..
+    
+    - name: Get version
+      id: version
+      run: |
+        if [[ "${{ github.ref }}" == refs/tags/* ]]; then
+          echo "version=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+        else
+          echo "version=dev-$(date +%Y%m%d-%H%M%S)" >> $GITHUB_OUTPUT
+        fi
+    
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ env.APP_NAME }}-${{ steps.version.outputs.version }}
+        path: |
+          ${{ env.APP_NAME }}.dmg
+          ${{ env.APP_NAME }}.zip
+        retention-days: 30
+    
+    - name: Create Release
+      if: startsWith(github.ref, 'refs/tags/v')
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          ${{ env.APP_NAME }}.dmg
+          ${{ env.APP_NAME }}.zip
+        draft: false
+        prerelease: false
+        generate_release_notes: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
