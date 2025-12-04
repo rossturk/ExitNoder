@@ -79,9 +79,14 @@ jobs:
     - name: Re-sign with correct entitlements
       run: |
         # Re-sign the app with explicit entitlements to ensure sandbox is disabled
-        codesign --force --options runtime --entitlements ExitNoder.entitlements \
+        # Use --deep to sign all nested code and frameworks
+        codesign --force --deep --options runtime --entitlements ExitNoder.entitlements \
           --sign "Developer ID Application" \
           "build/${{ env.APP_NAME }}.app"
+
+        # Verify the signature is valid
+        echo "Verifying signature:"
+        codesign -vvv "build/${{ env.APP_NAME }}.app"
 
         # Verify the entitlements are correct
         echo "Verifying entitlements:"
