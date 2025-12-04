@@ -9,9 +9,7 @@
 </p>
 
 <p align="center">
-  <img src="screenshots/menubar.png" alt="Menu Bar" width="280">
-  &nbsp;&nbsp;&nbsp;
-  <img src="screenshots/favorites.png" alt="Favorites Manager" width="380">
+  <img src="screenshot/screenshot.png" alt="ExitNoder Screenshot">
 </p>
 
 ---
