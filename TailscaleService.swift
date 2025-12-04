@@ -61,7 +61,7 @@ class TailscaleService {
             // Silently handle Tailscale not running - don't spam console
             errorMessage = "Tailscale is not running. Please start Tailscale to manage exit nodes."
         } catch {
-            errorMessage = "Failed to connect to Tailscale. Please ensure Tailscale is running and accessible."
+            errorMessage = "Mac App Store installations of Tailscale aren't supported."
         }
         
         isLoading = false

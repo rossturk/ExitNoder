@@ -210,9 +210,16 @@ class TailscaleLocalAPI {
                 if process.terminationStatus == 0 {
                     continuation.resume(returning: output)
                 } else {
-                    let message = errorOutput.isEmpty ? "Command failed with status \(process.terminationStatus)" : errorOutput
-                    print("🔧 ERROR: \(message)")
-                    continuation.resume(throwing: TailscaleAPIError.commandFailed(message: message))
+                    // Exit code 5 typically means Mac App Store version, which doesn't support CLI
+                    if process.terminationStatus == 5 && self.tailscalePath.contains("/Applications/Tailscale.app") {
+                        let message = "The Mac App Store version of Tailscale doesn't support CLI commands. Please install Tailscale from https://tailscale.com/download or use Homebrew: 'brew install tailscale'"
+                        print("🔧 ERROR: \(message)")
+                        continuation.resume(throwing: TailscaleAPIError.macAppStoreNotSupported)
+                    } else {
+                        let message = errorOutput.isEmpty ? "Command failed with status \(process.terminationStatus)" : errorOutput
+                        print("🔧 ERROR: \(message)")
+                        continuation.resume(throwing: TailscaleAPIError.commandFailed(message: message))
+                    }
                 }
             }
         }
@@ -338,6 +345,7 @@ enum TailscaleAPIError: LocalizedError {
     case notRunning
     case connectionFailed
     case commandFailed(message: String)
+    case macAppStoreNotSupported
     
     var errorDescription: String? {
         switch self {
@@ -349,6 +357,8 @@ enum TailscaleAPIError: LocalizedError {
             return "Failed to connect to Tailscale. Please ensure Tailscale is running."
         case .commandFailed(let message):
             return "Tailscale command failed: \(message)"
+        case .macAppStoreNotSupported:
+            return "The Mac App Store version of Tailscale is not supported."
         }
     }
 }
