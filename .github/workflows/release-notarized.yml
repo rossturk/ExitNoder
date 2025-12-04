@@ -75,7 +75,18 @@ jobs:
       run: |
         mkdir -p build
         cp -R "${{ env.APP_NAME }}.xcarchive/Products/Applications/${{ env.APP_NAME }}.app" build/
-    
+
+    - name: Re-sign with correct entitlements
+      run: |
+        # Re-sign the app with explicit entitlements to ensure sandbox is disabled
+        codesign --force --options runtime --entitlements ExitNoder.entitlements \
+          --sign "Developer ID Application" \
+          "build/${{ env.APP_NAME }}.app"
+
+        # Verify the entitlements are correct
+        echo "Verifying entitlements:"
+        codesign -d --entitlements - "build/${{ env.APP_NAME }}.app"
+
     - name: Notarize app
       env:
         APPLE_ID: ${{ secrets.APPLE_DEVELOPER_ID }}
